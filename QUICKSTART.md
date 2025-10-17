@@ -37,68 +37,10 @@ npm install
 npm run dev
 ```
 
-### Windows:
 
-**Command Prompt 1 - Backend:**
-```cmd
-cd backend
-start.bat
-```
 
-**Command Prompt 2 - Frontend:**
-```cmd
-cd frontend
-npm install
-npm run dev
-```
 
-## Option 2: Manual Start
 
-### Backend Setup:
-
-```bash
-# Navigate to backend
-cd backend
-
-# Create virtual environment
-python3 -m venv venv
-
-# Activate virtual environment
-source venv/bin/activate  # macOS/Linux
-# OR
-venv\Scripts\activate     # Windows
-
-# Install dependencies
-pip install -r requirements.txt
-
-# Copy environment file
-cp .env.example .env      # macOS/Linux
-# OR
-copy .env.example .env    # Windows
-
-# Start server
-uvicorn app.main:app --reload --port 8000
-```
-
-✅ Backend will be at: http://localhost:8000
-
-### Frontend Setup:
-
-```bash
-# Navigate to frontend (in new terminal)
-cd frontend
-
-# Install dependencies
-npm install
-
-# Create environment file
-echo "NEXT_PUBLIC_API_URL=http://localhost:8000" > .env.local
-
-# Start development server
-npm run dev
-```
-
-✅ Frontend will be at: http://localhost:3000
 
 ## First Time Usage
 

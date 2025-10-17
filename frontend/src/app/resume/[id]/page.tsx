@@ -28,8 +28,9 @@ export default function ResumePage() {
   const resumeId = parseInt(params.id as string);
   
   const { isAuthenticated, fetchUser } = useAuthStore();
-  const { currentResume, fetchResume, updateResume, regenerateSummary } = useResumeStore();
+  const { currentResume, fetchResume, updateResume, regenerateSummary, exportPDF } = useResumeStore();
   const [isRegenerating, setIsRegenerating] = useState(false);
+  const [isExporting, setIsExporting] = useState(false);
   const [selectedTemplate, setSelectedTemplate] = useState('modern');
 
   useEffect(() => {
@@ -78,6 +79,18 @@ export default function ResumePage() {
     }
   };
 
+  const handleExportPDF = async () => {
+    setIsExporting(true);
+    try {
+      await exportPDF(resumeId);
+      toast.success('PDF exported successfully!');
+    } catch (error) {
+      toast.error('Failed to export PDF');
+    } finally {
+      setIsExporting(false);
+    }
+  };
+
   if (!currentResume) {
     return (
       <div className="min-h-screen flex items-center justify-center">
@@ -106,7 +119,11 @@ export default function ResumePage() {
               {currentResume.is_public ? <EyeOff className="h-4 w-4 mr-2" /> : <Eye className="h-4 w-4 mr-2" />}
               {currentResume.is_public ? 'Make Private' : 'Make Public'}
             </Button>
-            <Button variant="outline">
+            <Button 
+              variant="outline" 
+              onClick={handleExportPDF}
+              isLoading={isExporting}
+            >
               <Download className="h-4 w-4 mr-2" />
               Export PDF
             </Button>

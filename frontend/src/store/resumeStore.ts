@@ -35,6 +35,7 @@ interface ResumeState {
   updateResume: (id: number, data: any) => Promise<void>;
   deleteResume: (id: number) => Promise<void>;
   regenerateSummary: (id: number) => Promise<void>;
+  exportPDF: (id: number) => Promise<void>;
   
   // Achievement operations
   fetchAchievements: () => Promise<void>;
@@ -111,6 +112,37 @@ export const useResumeStore = create<ResumeState>((set, get) => ({
     set((state) => ({
       currentResume: state.currentResume?.id === id ? { ...state.currentResume, summary: response.data.summary } : state.currentResume,
     }));
+  },
+
+  exportPDF: async (id: number) => {
+    const response = await api.get(`/api/resumes/${id}/export-pdf`, {
+      responseType: 'blob',
+    });
+    
+    // Create a blob from the PDF data
+    const blob = new Blob([response.data], { type: 'application/pdf' });
+    
+    // Create a link element and trigger download
+    const link = document.createElement('a');
+    link.href = window.URL.createObjectURL(blob);
+    
+    // Get filename from Content-Disposition header or use default
+    const contentDisposition = response.headers['content-disposition'];
+    let filename = 'resume.pdf';
+    if (contentDisposition) {
+      const filenameMatch = contentDisposition.match(/filename="?(.+)"?/i);
+      if (filenameMatch && filenameMatch[1]) {
+        filename = filenameMatch[1];
+      }
+    }
+    
+    link.download = filename;
+    document.body.appendChild(link);
+    link.click();
+    document.body.removeChild(link);
+    
+    // Clean up the URL object
+    window.URL.revokeObjectURL(link.href);
   },
 
   // Achievement operations
